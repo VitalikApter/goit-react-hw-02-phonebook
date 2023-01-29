@@ -15,17 +15,21 @@
 
 .btn {
     display: block;
+    border-radius: 5px;
+    border-color: inherit;
 }
 
 .input {
     margin-bottom: 15px;
+    box-shadow: inset 0px 0px 3px 0px;
 }
 
 .form {
     width: 300px;
     padding: 5px 10px;
     border: 1px solid;
-    border-radius: 5px
+    border-radius: 5px;
+
 }
 
 .list {

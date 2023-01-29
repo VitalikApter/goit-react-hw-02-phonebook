@@ -1,33 +1,34 @@
 import { Component } from "react";
-import css from './PhoneBook.module.scss';
 import { nanoid } from "nanoid";
+
+import ContactsList from "./ContactsList/ContactsList";
+import ContactsFilter from "./ContactsFilter/ContactsFilter";
+import PhoneBookForm from "./PhoneBookForm/PhoneBookForm";
+
+import css from './PhoneBook.module.scss';
 
 
 class PhoneBook extends Component{
 
     state = {
         contacts: [],
-        name: "",
-        number: "",
         filter: "",
     }
 
-    removeContact(id) {
-this.setState(({contacts}) => {
+    removeContact = (id) => {
+    this.setState(({contacts}) => {
     const newContacts = contacts.filter(contact => contact.id !== id);
     return {contacts:newContacts}
 })
     }
 
 
-    addContact = (e) => {
-        e.preventDefault();
-        const {name, number,} = this.state;
+    addContact = ({name, number}) => {
         if(this.isDublicate(name, number)) {    
         return alert (`${name}. number: ${number} is already in contacts.`);
         }
         this.setState(prevState => {
-            const {name, number, contacts} = prevState;
+            const {contacts} = prevState;
             
             const newContact = {
                 id: nanoid(),
@@ -35,16 +36,12 @@ this.setState(({contacts}) => {
                 number,
             }
 
-            return {contacts: [newContact, ...contacts], name:"", number:""}
+            return {contacts: [newContact, ...contacts]}
         })
     };
 
-
-    handleChange = ({target}) => {
-        const {name, value} = target;
-        this.setState({
-            [name]: value
-        })
+    handleFilter = ({target}) => {
+        this.setState({filter: target.value})
     }
 
     isDublicate(name, number) {
@@ -56,7 +53,7 @@ this.setState(({contacts}) => {
         })
 
         return Boolean(contact);
-    }
+    };
 
     getFilteredContacts() {
         const {filter, contacts} = this.state;
@@ -72,56 +69,21 @@ this.setState(({contacts}) => {
     }
 
     render() {
-        const {addContact, handleChange} = this;
-        const { name, number} = this.state;
+        const {addContact, handleFilter, removeContact} = this;
         const contacts = this.getFilteredContacts();
-
-        const contactsList = contacts.map(({id, name, number}) => 
-        <li key={id}>{name}: {number} 
-        <button onClick={() => this.removeContact(id)} className={css.btn}>Delete Contact</button></li>) 
-        
+        const isContacts = Boolean(contacts.length);
         return (
             <>
             <div className={css.wrapper}>
 
              <div className={css.form}>  
     <h2 className={css.title}>Phonebook</h2>
-    <form action="" onSubmit={addContact}>
-
-        <div className={css.formGroup}>
-        <label>Name <br />
-    <input onChange={handleChange} value={name} className={css.input}
-        type="text"
-        name="name"
-        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-        required
-    />
-        </label>
-      </div>
-      <div className={css.formGroup}>
-        <label>Number <br />
-    <input onChange={handleChange} value={number}  className={css.input}
-        type="tel"
-        name="number"
-        pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-        title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-        required
-    />
-        </label>
-        </div>
-        <button className={css.btn}  type="submit">Add Contact</button>
-    </form>
+    <PhoneBookForm onSubmit={addContact}/>
     </div> 
-
-    <div className={css.cocntacts}>
-    <h2 className={css.title}>Contacts</h2>
-    <input name="filter" onChange={handleChange} className={css.form} placeholder="add name" />
-    <ol className={css.list}>
-     {contactsList}
-    </ol>
-    </div>
-
+            <ContactsFilter handleChange={handleFilter}/>
+     {isContacts && <ContactsList removeContact={removeContact} contacts={contacts} />}
+     {!isContacts && <p>No Contacts</p>}
+            
     </div>
             </>
     
