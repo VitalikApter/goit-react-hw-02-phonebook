@@ -1,6 +1,5 @@
 import PhoneBook from 'components/PhoneBook/PhoneBook';
 
-
 export const App = () => {
   return (
     <div>
@@ -9,12 +8,4 @@ export const App = () => {
   );
 };
 
-
-
-
 export default App;
-
-
-
-
-

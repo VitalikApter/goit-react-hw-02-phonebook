@@ -47,7 +47,7 @@ class PhoneBook extends Component {
     const { contacts } = this.state;
     const contact = contacts.find(({ name, number }) => {
       return (
-        name.toLowerCase() === normalizedName &&
+        name.toLowerCase() === normalizedName ||
         number.toLowerCase() === normalizedNumber
       );
     });
